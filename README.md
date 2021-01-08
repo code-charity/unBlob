@@ -6,4 +6,4 @@
 
 <h3 align="center">unBlob</h3>
 
-<p align="center">Best unblob Tool. Works with all websites! Move your mouse cursor over video and open video in new tab.</p>
+<p align="center">Move your mouse cursor over video and open video in new tab.</p>
