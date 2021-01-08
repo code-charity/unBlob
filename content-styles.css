@@ -1,0 +1,67 @@
+/*---------------------------------------------------------------
+>>> unBlob
+-----------------------------------------------------------------
+1.0 Outline
+---------------------------------------------------------------*/
+
+/*---------------------------------------------------------------
+1.0 OUTLINE
+---------------------------------------------------------------*/
+
+.unblob__outline
+{
+    position: fixed !important;
+    z-index: 2147483647 !important;
+
+    display: block !important;
+    overflow: hidden !important;
+
+    box-sizing: border-box !important;
+    padding: 4px !important;
+
+    pointer-events: none !important;
+
+    opacity: 1 !important;
+    border: 2px solid #ef4fa6 !important;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,.2) !important;
+}
+
+.unblob__outline--hidden,
+.unblob__outline--perm
+{
+    visibility: hidden !important;
+}
+
+.unblob__button
+{
+    position: absolute !important;
+    top: 16px !important;
+    left: 16px !important;
+
+    display: block !important;
+
+    box-sizing: border-box !important;
+    width: 40px !important;
+    height: 40px !important;
+    padding: 8px !important;
+
+    cursor: pointer !important;
+    transition: transform 150ms !important;
+    transform: scale(1) !important;
+    pointer-events: all !important;
+
+    border-radius: 4px !important;
+    background: #ef4fa6 !important;
+}
+
+.unblob__button:hover
+{
+    transform: scale(1.1) !important;
+}
+
+.unblob__button svg
+{
+    pointer-events: none !important;
+
+    fill: #fafafa !important;
+}
