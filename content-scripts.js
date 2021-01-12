@@ -2,6 +2,7 @@
 >>> UNBLOB
 --------------------------------------------------------------------------------
 # Global variables
+# Inject script
 # User interface
 # Search videos
 # Update rects
@@ -13,14 +14,30 @@
 # GLOBAL VARIABLES
 ------------------------------------------------------------------------------*/
 
-var ui = false,
-    ui_link = false;
-videos = [],
+var unBlob_blobs = {},
+    ui = false,
+    ui_link = false,
+    videos = [],
     rects = [],
     mouse = {
         x: 0,
         y: 0
     };
+
+
+/*------------------------------------------------------------------------------
+# INJECT SCRIPT
+------------------------------------------------------------------------------*/
+
+function injectScript(string) {
+    var script = document.createElement('script');
+
+    script.textContent = string;
+
+    document.documentElement.appendChild(script);
+
+    //script.remove();
+}
 
 
 /*------------------------------------------------------------------------------
@@ -137,7 +154,13 @@ function isHover() {
             ui.classList.remove('unblob-outline--hidden');
         }
 
-        ui_link.href = videos[active.index].src;
+        var found = unBlob_blobs[videos[active.index].src];
+
+        if (found) {
+            ui_link.href = found;
+        } else {
+            ui_link.href = videos[active.index].src;
+        }
 
         resizeUI(active);
     } else if (ui) {
@@ -161,4 +184,89 @@ window.addEventListener('DOMContentLoaded', function() {
     createUI();
 
     setInterval(searchVideos, 1000);
+});
+
+injectScript(`
+    var unBlob_blobs = {};
+
+    XMLHttpRequestPrototypeOpen = XMLHttpRequest.prototype.open;
+    SourceBufferPrototypeAppendBuffer = SourceBuffer.prototype.appendBuffer;
+
+    MediaSource.prototype.blobSrc = false;
+    ArrayBuffer.prototype.URL = false;
+    SourceBuffer.prototype.URL = false;
+    Uint8Array.prototype.URL = false;
+
+
+    URL.createObjectURL = (function(original) {
+        return function() {
+            var result = original.apply(this, arguments);
+            
+            //console.log('createObjectURL', arguments, result);
+
+            this.blobSrc = result;
+
+            unBlob_blobs[result] = arguments[0];
+            //unBlob_blobs[result] = arguments[0].sourceBuffers[0].URL.replace(/(\\&|\\?)range\\=[^&]*/, '');
+            
+            return result;
+        }
+    })(URL.createObjectURL);
+
+
+    XMLHttpRequest.prototype.open = function() {
+        this.addEventListener('load', function() {
+            this.response.URL = this.responseURL;
+
+            //console.log('XMLHttpRequest', this.response);
+        });
+
+        XMLHttpRequestPrototypeOpen.apply(this, arguments, arguments.callee);
+    };
+
+
+    Uint8Array = (function(Uint8Array) {
+        return function(buffer, byteOffset, length) {
+            var a;
+
+            a = new Uint8Array(buffer, byteOffset, length);
+
+            a.URL = buffer.URL;
+
+            //console.log('Uint8Array', a);
+
+            return a;
+        };
+    }(Uint8Array));
+
+
+    SourceBuffer.prototype.appendBuffer = function() {
+        var a = SourceBufferPrototypeAppendBuffer.apply(this, arguments);
+
+        this.URL = arguments[0].URL;
+
+        //console.log('SourceBuffer', arguments, a);
+
+        var data = {};
+
+        for (var key in unBlob_blobs) {
+            var item = unBlob_blobs[key];
+
+            if (
+                item.sourceBuffers &&
+                item.sourceBuffers[0] &&
+                item.sourceBuffers[0].URL
+            ) {
+                data[key] = item.sourceBuffers[0].URL.replace(/(\\&|\\?)range\\=[^&]*/, '');
+            }
+        }
+
+        document.dispatchEvent(new CustomEvent('unblob-updated-source-buffer', {
+            detail: data
+        }));
+    };
+`);
+
+document.addEventListener('unblob-updated-source-buffer', function(event) {
+    unBlob_blobs = event.detail;
 });
