@@ -15,12 +15,6 @@
         "css": ["content-styles.css"],
         "run_at": "document_start"
     }],
-    "background": {
-        "persistent": true,
-        "scripts": [
-            "background.js"
-        ]
-    },
     "permissions": [
         "<all_urls>"
     ],
