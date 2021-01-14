@@ -6,4 +6,4 @@
 
 <h3 align="center">unBlob</h3>
 
-<p align="center">Move your mouse cursor over video, then open any audio/video outside of websites! 👌</p>
+<p align="center">Move your mouse cursor over video/audio, then open any video/audio outside of websites! 👌</p>
