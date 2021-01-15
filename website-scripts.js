@@ -138,7 +138,7 @@ unBlob.createUserInterface = function() {
     container.className = 'unblob-container--hidden';
 
     link.className = 'unblob-button'
-
+    link.target = '_blank';
     link.innerHTML = '<svg viewBox="0 0 24 24"><path d="M18 19H6a1 1 0 01-1-1V6c0-.6.5-1 1-1h5c.6 0 1-.5 1-1s-.5-1-1-1H5a2 2 0 00-2 2v14c0 1.1.9 2 2 2h14a2 2 0 002-2v-6c0-.6-.5-1-1-1s-1 .5-1 1v5c0 .6-.5 1-1 1zM14 4c0 .6.5 1 1 1h2.6l-9.1 9.1a1 1 0 101.4 1.4l9.1-9V9c0 .6.5 1 1 1s1-.5 1-1V4c0-.6-.5-1-1-1h-5a1 1 0 00-1 1z"/></svg>';
 
     container.appendChild(link);
@@ -155,21 +155,25 @@ unBlob.createUserInterface = function() {
 ------------------------------------------------------------------------------*/
 
 
-unBlob.resizeUserInterface = function(rect) {
-    if (unBlob.ui.offsetLeft !== rect.left) {
-        unBlob.ui.style.left = rect.left + 'px';
-    }
+unBlob.resizeUserInterface = function() {
+    if (unBlob.active) {
+        var rect = unBlob.active;
 
-    if (unBlob.ui.offsetTop !== rect.top) {
-        unBlob.ui.style.top = rect.top + 'px';
-    }
+        if (unBlob.ui.offsetLeft !== rect.left) {
+            unBlob.ui.style.left = rect.left + 'px';
+        }
 
-    if (unBlob.ui.offsetWidth !== rect.width) {
-        unBlob.ui.style.width = rect.width + 'px';
-    }
+        if (unBlob.ui.offsetTop !== rect.top) {
+            unBlob.ui.style.top = rect.top + 'px';
+        }
 
-    if (unBlob.ui.offsetHeight !== rect.height) {
-        unBlob.ui.style.height = rect.height + 'px';
+        if (unBlob.ui.offsetWidth !== rect.width) {
+            unBlob.ui.style.width = rect.width + 'px';
+        }
+
+        if (unBlob.ui.offsetHeight !== rect.height) {
+            unBlob.ui.style.height = rect.height + 'px';
+        }
     }
 };
 
@@ -187,6 +191,7 @@ unBlob.observe = function() {
                 data = element.getBoundingClientRect();
 
             element.classList.add('unblob-media');
+            element.unblob_index = unBlob.rects.length;
 
             unBlob.media.push(element);
 
@@ -194,12 +199,20 @@ unBlob.observe = function() {
                 index: unBlob.rects.length
             });
 
-            var rect = unBlob.rects[unBlob.rects.length];
+            element.addEventListener('timeupdate', function() {
+                var data = this.getBoundingClientRect(),
+                    rect = unBlob.rects[this.unblob_index];
 
-            rect.left = data.left;
-            rect.top = data.top;
-            rect.width = data.width;
-            rect.height = data.height;
+                if (data && this.style.display != 'none') {
+
+                    rect.left = data.left;
+                    rect.top = data.top;
+                    rect.width = data.width;
+                    rect.height = data.height;
+
+                    unBlob.resizeUserInterface();
+                }
+            });
         }
     }, 1000);
 };
@@ -223,6 +236,8 @@ unBlob.updateRects = function() {
             rect.height = data.height;
         }
     }
+
+    unBlob.resizeUserInterface();
 };
 
 
@@ -231,7 +246,7 @@ unBlob.updateRects = function() {
 ------------------------------------------------------------------------------*/
 
 unBlob.mouseOver = function() {
-    var active = false;
+    unBlob.active = false;
 
     for (var i = 0, l = unBlob.rects.length; i < l; i++) {
         var rect = unBlob.rects[i];
@@ -242,16 +257,16 @@ unBlob.mouseOver = function() {
             unBlob.mouse.x < rect.left + rect.width &&
             unBlob.mouse.y < rect.top + rect.height
         ) {
-            active = rect;
+            unBlob.active = rect;
         }
     }
 
-    if (active) {
-        if (unBlob.ui) {
+    if (unBlob.active) {
+        if (unBlob.ui && unBlob.ui.className !== 'unblob-container') {
             unBlob.ui.className = 'unblob-container';
         }
 
-        var found = unBlob.blobs[unBlob.media[active.index].src];
+        var found = unBlob.blobs[unBlob.media[unBlob.active.index].src];
 
         if (
             found &&
@@ -261,11 +276,11 @@ unBlob.mouseOver = function() {
         ) {
             unBlob.ui_link.href = found.activeSourceBuffers[0].URL.replace(/(\&|\?)range\=[^&]*/, '');
         } else {
-            unBlob.ui_link.href = unBlob.media[active.index].src;
+            unBlob.ui_link.href = unBlob.media[unBlob.active.index].src;
         }
 
-        unBlob.resizeUserInterface(active);
-    } else if (unBlob.ui) {
+        unBlob.resizeUserInterface();
+    } else if (unBlob.ui && unBlob.ui.className !== 'unblob-container--hidden') {
         unBlob.ui.className = 'unblob-container--hidden';
     }
 };
@@ -285,20 +300,14 @@ unBlob.init = function() {
         unBlob.createUserInterface();
         unBlob.observe();
 
-        window.addEventListener('scroll', unBlob.updateRects);
-        window.addEventListener('mousewheel', unBlob.updateRects);
+        setInterval(unBlob.mouseOver);
 
-        window.addEventListener('resize', function() {
-            setTimeout(function() {
-                unBlob.updateRects();
-            }, 100);
-        });
+        window.addEventListener('popstate', unBlob.updateRects);
+        window.addEventListener('scroll', unBlob.updateRects);
 
         window.addEventListener('mousemove', function(event) {
             unBlob.mouse.x = event.clientX;
             unBlob.mouse.y = event.clientY;
-
-            unBlob.mouseOver();
         });
     });
 };
