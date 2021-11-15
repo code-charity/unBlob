@@ -1,6 +1,6 @@
 <p align="center">
     <a href="https://github.com/victor-savinov/unblob">
-        <img src="https://github.com/victor-savinov/icons/blob/master/unblob/unelevated-128.png">
+        <img src="https://github.com/victor-savinov/graphics/blob/master/icons/unblob/unelevated-128.png">
     </a>
 </p>
 
