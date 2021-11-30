@@ -3,30 +3,31 @@
 --------------------------------------------------------------*/
 
 .unblob {
-	position: fixed;
-	z-index: 2147483647;
-	display: none;
-	box-sizing: border-box;
-	pointer-events: none;
-	border: 2px solid #ef4fa6;
+	position: fixed !important;
+	z-index: 2147483647 !important;
+	display: none !important;
+	box-sizing: border-box !important;
+	pointer-events: none !important;
+	border: 2px solid #ef4fa6 !important;
 }
 
 .unblob--visible {
-	display: block;
+	display: block !important;
 }
 
 .unblob__button {
-	position: absolute;
-	top: 16px;
-	left: 16px;
-	width: 24px;
-	height: 24px;
-	padding: 8px;
-	color: #fff;
-	border-radius: 4px;
-	background: #ef4fa6;
+	position: absolute !important;
+	top: 16px !important;
+	left: 16px !important;
+	width: 24px !important;
+	height: 24px !important;
+	padding: 8px !important;
+	color: #fff !important;
+	border-radius: 4px !important;
+	background: #ef4fa6 !important;
 }
 
 .unblob__button svg {
-	fill: currentColor;
+	display: block !important;
+	fill: currentColor !important;
 }
