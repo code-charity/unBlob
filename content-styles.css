@@ -1,68 +1,32 @@
-/*------------------------------------------------------------------------------
+/*--------------------------------------------------------------
 >>> UNBLOB
---------------------------------------------------------------------------------
-# Outline
-# Button
-------------------------------------------------------------------------------*/
+--------------------------------------------------------------*/
 
-/*------------------------------------------------------------------------------
-# OUTLINE
-------------------------------------------------------------------------------*/
-
-.unblob-container,
-.unblob-container--hidden
-{
-    position: fixed;
-    z-index: 2147483647;
-
-    box-sizing: border-box;
-    padding: 4px;
-
-    pointer-events: none;
-
-    border: 2px solid #ef4fa6;
-    box-shadow: inset 0 0 0 1px rgba(0,0,0,.2);
+.unblob {
+	position: fixed;
+	z-index: 2147483647;
+	display: none;
+	box-sizing: border-box;
+	pointer-events: none;
+	border: 2px solid #ef4fa6;
 }
 
-.unblob-container--hidden
-{
-    display: none;
+.unblob--visible {
+	display: block;
 }
 
-
-/*------------------------------------------------------------------------------
-# BUTTON
-------------------------------------------------------------------------------*/
-
-.unblob-button
-{
-    position: absolute;
-    top: 16px;
-    left: 16px;
-
-    display: block;
-
-    box-sizing: border-box;
-    width: 40px;
-    height: 40px;
-    padding: 8px;
-
-    cursor: pointer;
-    transition: transform 150ms;
-    transform: scale(1);
-    pointer-events: all;
-
-    background: #ef4fa6;
+.unblob__button {
+	position: absolute;
+	top: 16px;
+	left: 16px;
+	width: 24px;
+	height: 24px;
+	padding: 8px;
+	color: #fff;
+	border-radius: 4px;
+	background: #ef4fa6;
 }
 
-.unblob-button:hover
-{
-    transform: scale(1.1);
-}
-
-.unblob-button svg
-{
-    pointer-events: none;
-
-    fill: #fafafa;
+.unblob__button svg {
+	fill: currentColor;
 }
