@@ -35,7 +35,7 @@ unblob.mutations.promiseThen = function () {
 		return function () {
 			if (this._unblob === 'fetch') {
 				for (var i = 0, l = arguments.length; i < l; i++) {
-					arguments[i] = unblob.mutate(arguments[i], function (arguments, original) {
+					/*arguments[i] = unblob.mutate(arguments[i], function (arguments, original) {
 						var argument = arguments[0];
 
 						console.log('Promise.then->Function', argument);
@@ -48,7 +48,7 @@ unblob.mutations.promiseThen = function () {
 
 							console.log('ReadableStream', argument.body);
 						}
-					});
+					});*/
 				}
 			}
 
@@ -68,7 +68,7 @@ unblob.mutations.responseArrayBuffer = function () {
 
 			result.then(function (response) {
 				response._unblob = 'hello-world'
-				console.log('Response.arrayBuffer', response);
+				//console.log('Response.arrayBuffer', response);
 			});
 
 			//console.log('responseArrayBuffer', result, arguments);
@@ -103,7 +103,7 @@ unblob.mutations.MediaSource = function () {
 
 							this._unblob = arguments[0]._unblob;
 
-							console.log('SourceBuffer.appendBuffer', arguments[0]);
+							//console.log('SourceBuffer.appendBuffer', arguments[0]);
 
 							return result;
 						};
@@ -147,7 +147,7 @@ unblob.mutations.ReadableStreamGetReader = function () {
 		var object = function () {
 			var result = original.apply(this, arguments);
 
-			console.log('ReadableStream.getReader', result, arguments);
+			//console.log('ReadableStream.getReader', result, arguments);
 
 			return result;
 		};
@@ -169,6 +169,7 @@ unblob.mutations.XMLHttpRequest = function () {
 
 			result.addEventListener('load', function (event) {
 				if (this.response instanceof ArrayBuffer) {
+					console.log(this.response);
 					this.response._unblob = this.responseURL;
 				}
 			}, true);
@@ -188,17 +189,18 @@ unblob.mutations.XMLHttpRequest = function () {
 
 unblob.mutations.fetch = function () {
 	fetch = (function (original) {
-		var object = function () {
-			var result = original.apply(this, arguments);
+		var self = this,
+			object = async function () {
+				var result = original.apply(this, arguments);
 
-			result._unblob = 'fetch';
+				result._unblob = 'fetch';
 
-			result.then(function (response) {
-				//console.log('fetch', response);
-			});
+				/*result.then(function (response) {
+					//console.log('fetch', response);
+				});*/
 
-			return result;
-		};
+				return result;
+			};
 
 		for (var key in original) {
 			object[key] = original[key];
@@ -216,7 +218,7 @@ unblob.mutations.Uint8Array = function () {
 			var result = new original(buffer, byteOffset, length);
 
 			if (buffer instanceof ArrayBuffer) {
-				console.log('Uint8Array', buffer, '>', result);
+				//console.log('Uint8Array', buffer, '>', result);
 
 				result._unblob = buffer._unblob;
 			}
