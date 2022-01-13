@@ -9,21 +9,28 @@
         "48": "icons/48.png",
         "128": "icons/128.png"
     },
+    "background": {
+        "service_worker": "background.js"
+    },
     "content_scripts": [{
         "matches": [
             "<all_urls>"
         ],
         "all_frames": true,
         "css": [
-            "content-styles.css"
+            "extension-styles.css"
         ],
         "js": [
-            "content-script.js"
+            "extension-core.js",
+            "extension-features.js"
         ],
         "run_at": "document_start"
     }],
     "web_accessible_resources": [{
         "resources": ["website-script.js"],
         "matches": ["<all_urls>"]
-    }]
+    }],
+    "permissions": [
+        "storage"
+    ]
 }
