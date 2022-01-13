@@ -1,0 +1,92 @@
+/*--------------------------------------------------------------
+>>> FRAME BY FRAME
+----------------------------------------------------------------
+# Document
+# Container
+# Surface
+# Buttons
+	# Toggle
+	# Drag & Drop
+	# Resize
+--------------------------------------------------------------*/
+
+/*--------------------------------------------------------------
+# DOCUMENT
+--------------------------------------------------------------*/
+
+html.unblob--pointer,
+html.unblob--pointer * {
+	cursor: pointer !important;
+}
+
+html.unblob--grab,
+html.unblob--grab * {
+	cursor: grab !important;
+}
+
+html.unblob--grabbing,
+html.unblob--grabbing * {
+	cursor: grabbing !important;
+}
+
+html.unblob--resize,
+html.unblob--resize * {
+	cursor: se-resize !important;
+}
+
+
+/*--------------------------------------------------------------
+# CONTAINER
+--------------------------------------------------------------*/
+
+.unblob {
+	position: fixed !important;
+	z-index: 2147483647 !important;
+	visibility: hidden !important;
+	box-sizing: border-box !important;
+	pointer-events: none !important;
+	opacity: 0 !important;
+	border: 1px solid rgba(0, 0, 0, .8) !important;
+	box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .8) !important;
+}
+
+.unblob--visible,
+.unblob--busy {
+	visibility: visible !important;
+	opacity: 1 !important;
+	transition: visibility 175ms, opacity 175ms !important;
+}
+
+.unblob--sleeping-mode {
+	visibility: hidden !important;
+	opacity: 0 !important;
+}
+
+
+/*--------------------------------------------------------------
+# SURFACE
+--------------------------------------------------------------*/
+
+.unblob__surface {
+	font-family: monospace !important;
+	font-size: 16px !important;
+	position: absolute !important;
+	top: 8px !important;
+	left: 8px !important;
+	box-sizing: border-box !important;
+	color: #fff !important;
+	border: 1px solid rgba(82, 82, 82, .9) !important;
+	border-radius: 8px !important;
+	background: #ef4fa6 !important;
+	overflow: hidden !important;
+	color: #fff !important;
+}
+
+.unblob__surface--collapsed {
+	visibility: hidden !important;
+}
+
+.unblob__surface svg {
+	display: block !important;
+	fill: currentColor !important;
+}
